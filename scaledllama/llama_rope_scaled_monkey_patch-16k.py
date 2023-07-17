@@ -11,7 +11,7 @@ class ScaledRotaryEmbedding(torch.nn.Module):
         super().__init__()
         inv_freq = 1.0 / (base ** (torch.arange(0, dim, 2).float().to(device) / dim))
         self.register_buffer("inv_freq", inv_freq)
-        max_position_embeddings = 8192
+        max_position_embeddings = 16384
 
         # Build here to make `torch.jit.trace` work.
         self.max_seq_len_cached = max_position_embeddings
@@ -21,7 +21,7 @@ class ScaledRotaryEmbedding(torch.nn.Module):
             dtype=self.inv_freq.dtype,
         )
 
-        self.scale = 1 / 4
+        self.scale = 1 / 8
         t *= self.scale
 
         freqs = torch.einsum("i,j->ij", t, self.inv_freq)
